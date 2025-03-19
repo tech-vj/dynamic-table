@@ -10,7 +10,7 @@ interface RecordField {
   record_value_number?: number;
 }
 
-const DynamicForm: React.FC = () => {
+const EMPForm: React.FC = () => {
   const [fields, setFields] = useState<RecordField[]>([
     { record_label: "EMP ID", record_type: "type_text", record_value: "" },
     { record_label: "Full Name", record_type: "type_text", record_value: "" },
@@ -21,6 +21,8 @@ const DynamicForm: React.FC = () => {
     { record_label: "Role", record_type: "type_text", record_value: "" },
     { record_label: "Department", record_type: "type_text", record_value: "" },
   ]);
+
+  const [jsonData, setJsonData] = useState<object | null>(null);
 
   const handleChange = (index: number, value: string) => {
     const updatedFields = [...fields];
@@ -39,26 +41,30 @@ const DynamicForm: React.FC = () => {
 
   const generateJSON = () => {
     const featureData = { record_data: fields };
-    const wildSearch = fields.map(f => f.record_value || f.record_value_date || f.record_value_number).join(" ");
+    const wildSearch = fields.map(f => f.record_value || f.record_value_date || f.record_value_number).join(" ").toLowerCase();
     
     const jsonData = {
-      total_results: 1,
-      data: [
-        {
-          record_id: "emp_rec_005",
-          feature_name: "emp",
-          added_by: "flex_admin",
-          record_status: "active",
-          created_on_date: new Date().toISOString().split("T")[0],
-          feature_data: featureData,
-          more_data: { wild_search: wildSearch },
-          doc_position: 0,
-        },
-      ],
+      data: {
+        record_id: "emp_rec_051",
+        feature_name: "emp",
+        added_by: "flex_admin",
+        record_status: "active",
+        created_on_date: new Date().toISOString().split("T")[0],
+        feature_data: featureData,
+        more_data: { wild_search: wildSearch }
+      },
+      dataset: "feature_data",
+      app_secret: "38475203487kwsdjfvb1023897yfwbhekrfj"
     };
     
-    console.log(jsonData);
-    alert("JSON generated! Check console.");
+    setJsonData(jsonData);
+  };
+
+  const copyToClipboard = () => {
+    if (jsonData) {
+      navigator.clipboard.writeText(JSON.stringify(jsonData, null, 2));
+      alert("JSON copied to clipboard!");
+    }
   };
 
   return (
@@ -75,9 +81,21 @@ const DynamicForm: React.FC = () => {
           />
         </div>
       ))}
-      <button className="mt-4 w-full p-2 bg-[var(--button-bg)] text-[var(--button-text)] rounded hover:bg-[var(--button-hover)]" onClick={generateJSON}>Generate JSON</button>
+      <div className="flex gap-2 mt-4">
+        <button className="flex-1 p-2 bg-[var(--button-bg)] text-[var(--button-text)] rounded hover:bg-[var(--button-hover)]" onClick={generateJSON}>Generate JSON</button>
+        <button className="flex-1 p-2 bg-[var(--button-bg)] text-[var(--button-text)] rounded hover:bg-[var(--button-hover)]" onClick={() => setJsonData(null)}>Clear</button>
+      </div>
+      {jsonData && (
+        <div className="mt-4 p-4 border rounded bg-[var(--bg-color)] text-[var(--text-color)] border-[var(--border-color)]">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-lg font-bold">Generated JSON:</h3>
+            <button className="p-1 bg-[var(--button-bg)] text-[var(--button-text)] rounded hover:bg-[var(--button-hover)]" onClick={copyToClipboard}>Copy</button>
+          </div>
+          <pre className="whitespace-pre-wrap text-sm">{JSON.stringify(jsonData, null, 2)}</pre>
+        </div>
+      )}
     </div>
   );
 };
 
-export default DynamicForm;
+export default EMPForm;
