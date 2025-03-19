@@ -25,7 +25,7 @@ const Sidebar = () => {
             conditions: [
               {
                 field: "feature_name",
-                value: "app1_menu",
+                value: "vj_menu",
                 search_type: "exact",
               },
             ],

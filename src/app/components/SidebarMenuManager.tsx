@@ -24,7 +24,7 @@ const SidebarMenuManager = () => {
             conditions: [
               {
                 field: "feature_name",
-                value: "app1_menu",
+                value: "vj_menu",
                 search_type: "exact",
               },
             ],
@@ -82,8 +82,8 @@ const SidebarMenuManager = () => {
         },
         body: JSON.stringify({
           data: {
-            record_id: "app1_menu_001",
-            feature_name: "app1_menu",
+            record_id: "vj_menu",
+            feature_name: "vj_menu",
             fields_to_update: {
               more_data: {
                 config: menuItems,
